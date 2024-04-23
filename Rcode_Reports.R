@@ -14,20 +14,15 @@ library(rmarkdown)
 rm(list = ls()) # initialization
 
 #List of experiments with Dates, GF units, and file path 
-list_of_experiments <- list(FP700 = list(StartDate = "2024-03-18", 
+list_of_experiments <- list(EXP1 = list(StartDate = "2024-03-11", 
                                          EndDate = as.character(Sys.Date()), 
-                                         Units = list("579" = 43), 
-                                         fileEID_path = "~/GreenFeed_UW/Methane/FP700/FP700_EID.csv"),
-  
-                            FP696 = list(StartDate = "2024-03-11", 
-                                         EndDate = as.character(Sys.Date()), 
-                                         Units = list("212" = 34), 
-                                         fileEID_path = "~/GreenFeed_UW/Methane/FP696/FP696_EID.csv"),
+                                         Units = list("1" = 34), 
+                                         fileEID_path = "/Users/EXP1_EID.csv"),
                   
-                            HMW677 = list(StartDate = "2024-02-01", 
+                            EXP2 = list(StartDate = "2024-02-01", 
                                           EndDate = as.character(Sys.Date()), 
-                                          Units = list("592" = 43, "593" = 43), 
-                                          fileEID_path = "~/GreenFeed_UW/Methane/HMW677/HMW677_EID.csv"))
+                                          Units = list("2" = 43, "3" = 43), 
+                                          fileEID_path = "/Users/EXP2_EID.csv"))
 
 
 #Generate report as PDF for each of the experiments specified in the list above:
