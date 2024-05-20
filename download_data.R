@@ -17,8 +17,8 @@ library(stringr)
 
 
 #Change to login: USER & PASSWORD
-#USER <- "xxxx" #Change to login password
-#PASS <- "xxxx"
+#USER <- "your_username" #Change to login password
+#PASS <- "your_password"
 
 #List of studies
 FID <- list(
