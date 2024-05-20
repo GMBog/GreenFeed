@@ -27,47 +27,47 @@ FID <- list(
     Unit = "579",
     StartDate = "2023-12-04",
     EndDate = "2024-01-11",
-    dir = "~/Principal/Conferences/ADSA2024/Workshop_GF/",
-    EIDdir = "~/Principal/Conferences/ADSA2024/Workshop_GF/ADSA2024_EID.csv")
+    dir = "~/ADSA2024/",
+    EIDdir = "~/ADSA2024/ADSA2024_EID.csv")
 )
 
 #Loop to download data for each study
 for (i in seq(FID)){
   
-##  First Authenticate to receive token:
-#  req <- POST("https://portal.c-lockinc.com/api/login", body=list(user=USER, pass=PASS))
-#  stop_for_status(req)
-#  TOK <- trimws(content(req))
-#  print(TOK)
-#  
-#  # Now get data using the login token
-#  URL = paste0("https://portal.c-lockinc.com/api/getemissions?d=visits&fids=", FID[[i]]$Unit, "&st=", FID[[i]]$StartDate, "&et=", FID[[i]]$EndDate, "%2012:00:00")
-#  print(URL)
-#  
-#  #replace with your Request URL
-#  req <- POST(URL, body=list(token=TOK))
-#  stop_for_status(req)
-#  a <- content(req)
-#  print(a)
-#  
-#  #Split the lines
-#  perline <- str_split(a, "\\n")[[1]]
-#  print(perline)
-#  
-#  #Split the commas into a dataframe, while getting rid of the "Parameters" line and the headers line
-#  df <- do.call("rbind", str_split(perline[3:length(perline)], ","))
-#  df = as.data.frame(df)
-#  colnames(df) = c('FeederID', 'AnimalName', 'RFID', 'StartTime', 'EndTime', 'GoodDataDuration', 
-#                   'CO2GramsPerDay', 'CH4GramsPerDay', 'O2GramsPerDay', 'H2GramsPerDay', 'H2SGramsPerDay', 
-#                   'AirflowLitersPerSec', 'AirflowCf', 'WindSpeedMetersPerSec', 'WindDirDeg', 'WindCf', 
-#                   'WasInterrupted', 'InterruptingTags', 'TempPipeDegreesCelsius', 'IsPreliminary','RunTime')
-#  
-#  #Data should be save as .csv to avoid formatting issues
-#  name_file = paste0(FID[[i]]$dir, FID[[i]]$Exp, "_GFdata.csv")
-#  write_excel_csv(df, file = name_file)
+#  First Authenticate to receive token:
+  req <- POST("https://portal.c-lockinc.com/api/login", body=list(user=USER, pass=PASS))
+  stop_for_status(req)
+  TOK <- trimws(content(req))
+  print(TOK)
   
-  #df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata_Day4.xlsx"))
-  df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata.xlsx"))
+  # Now get data using the login token
+  URL = paste0("https://portal.c-lockinc.com/api/getemissions?d=visits&fids=", FID[[i]]$Unit, "&st=", FID[[i]]$StartDate, "&et=", FID[[i]]$EndDate, "%2012:00:00")
+  print(URL)
+  
+  #replace with your Request URL
+  req <- POST(URL, body=list(token=TOK))
+  stop_for_status(req)
+  a <- content(req)
+  print(a)
+  
+  #Split the lines
+  perline <- str_split(a, "\\n")[[1]]
+  print(perline)
+  
+  #Split the commas into a dataframe, while getting rid of the "Parameters" line and the headers line
+  df <- do.call("rbind", str_split(perline[3:length(perline)], ","))
+  df = as.data.frame(df)
+  colnames(df) = c('FeederID', 'AnimalName', 'RFID', 'StartTime', 'EndTime', 'GoodDataDuration', 
+                   'CO2GramsPerDay', 'CH4GramsPerDay', 'O2GramsPerDay', 'H2GramsPerDay', 'H2SGramsPerDay', 
+                   'AirflowLitersPerSec', 'AirflowCf', 'WindSpeedMetersPerSec', 'WindDirDeg', 'WindCf', 
+                   'WasInterrupted', 'InterruptingTags', 'TempPipeDegreesCelsius', 'IsPreliminary','RunTime')
+  
+  #Data should be save as .csv to avoid formatting issues
+  name_file = paste0(FID[[i]]$dir, FID[[i]]$Exp, "_GFdata.csv")
+  write_excel_csv(df, file = name_file)
+ 
+  df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata_Day4.xlsx"))
+  #df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata.xlsx"))
   
   
   #Generate report as PDF for each of the experiments specified in the list above:
@@ -117,7 +117,7 @@ for (i in seq(FID)){
   
   
   #Create PDF report using Rmarkdown
-  render("~/Principal/Conferences/ADSA2024/Workshop_GF/ReportsGF.Rmd", 
+  render("~/ADSA2024/ReportsGF.Rmd", 
          output_file = paste0("~/Downloads/Report_", FID[[i]]$Exp))
   
 }
