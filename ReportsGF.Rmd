@@ -21,20 +21,19 @@ library(kableExtra)
 
 ```
 
-# Study `r selected_experiment`
+# Study `r FID[[i]]$Exp`
 
-## Unit(s): `r UNIT`
+## Unit(s): `r FID[[i]]$Unit`
 
-## Days of experiment: `r floor(as.numeric(difftime(max(Summarized_Data$StartTime), min(as.Date(Summarized_Data$StartTime)), units = "days")+1))` days
+## Days of experiment: `r floor(as.numeric(difftime(max(as.Date(df$StartTime)), min(as.Date(df$StartTime)), units = "days")+1))` days
 
-**Number of cows with records: `r nrow(semi_join(CowsInExperiment, Summarized_Data, by = c("EID" = "RFID")))` cows / Out of `r nrow(CowsInExperiment)`**
+**Number of cows with records: `r nrow(semi_join(CowsInExperiment, df, by = "FarmName"))` cows / Out of `r nrow(CowsInExperiment)`**
 
 **List of cows with no GreenFeed records:**
 
 ```{r Summary, message=FALSE, echo=FALSE}
 
-cows_missing <- anti_join(CowsInExperiment, Summarized_Data, by = c("EID" = "RFID"))
-knitr::kable(cows_missing, "simple")
+kbl(CowsInExperiment, "simple")
 
 ```
 
@@ -44,11 +43,12 @@ knitr::kable(cows_missing, "simple")
 
 ```{r Data per cow, message=FALSE, echo=FALSE, fig.height=4.2, fig.width=7}
 
-##Description of total number of records and CH4 PER DAY
-mean_freq <- mean(as.data.frame(table(as.Date(Summarized_Data$StartTime)))$Freq)
+mean_freq <- mean(as.data.frame(table(as.Date(df$StartTime)))$Freq)
+
+df$CH4GramsPerDay <- as.numeric(df$CH4GramsPerDay)
 
 #Plot 1: Total number of gas production records per day
-plot1 <- ggplot(as.data.frame(table(as.Date(Summarized_Data$StartTime))), aes(x = Var1, y = Freq)) + 
+plot1 <- ggplot(as.data.frame(table(as.Date(df$StartTime))), aes(x = Var1, y = Freq)) + 
   geom_col(color = "black") +
   labs(title = "Number of MeP records per day", x = "", y = "N records") +
   geom_hline(yintercept = mean_freq, linetype = "dashed", color = "red") +
@@ -62,12 +62,13 @@ plot1 <- ggplot(as.data.frame(table(as.Date(Summarized_Data$StartTime))), aes(x 
 plot1
 
 
+
 #Plot 2: CH4 production per day in the experimental period
-plot2 <- ggplot(Summarized_Data, aes(x = as.character(as.Date(StartTime)), y = CH4GramsPerDay, color = as.character(as.Date(StartTime)))) + 
+plot2 <- ggplot(df, aes(x = as.character(as.Date(StartTime)), y = CH4GramsPerDay, color = as.character(as.Date(StartTime)))) + 
   geom_boxplot(lwd = 0.8) +
-  scale_y_continuous(breaks = c(seq(0, max(Summarized_Data$CH4GramsPerDay)+10, 50))) +
+  scale_y_continuous(breaks = c(seq(0, max(df$CH4GramsPerDay)+10, 50))) +
   labs(title = "Methane production per day", x = "", y = "MeP (g/d)") +
-  geom_hline(yintercept = mean(Summarized_Data$CH4GramsPerDay), linetype = "dashed", color = "black", linewidth = 0.5) +
+  geom_hline(yintercept = mean(df$CH4GramsPerDay), linetype = "dashed", color = "black", linewidth = 0.5) +
   theme_classic() +
   theme(plot.title = element_text(size = 11, face = "bold"),
         axis.text.x = element_text(angle = 45, hjust = 1.05, size = 8),
@@ -88,7 +89,7 @@ plot2
 ## Description of total number of records and CH4 PER COW
 
 #Plot 1: Total number of gas production records per cow
-plot1 <- Summarized_Data %>%
+plot1 <- df %>%
   dplyr::mutate(day = as.Date(EndTime)) %>%
   dplyr::group_by(FarmName, day) %>%
   dplyr::summarise(n = n(), daily_CH4 = weighted.mean(CH4GramsPerDay, GoodDataDuration, na.rm = TRUE)) %>%
@@ -106,13 +107,13 @@ plot1 <- Summarized_Data %>%
   
     geom_text(aes(label = n), vjust = -1, color = "black",
             position = position_dodge(width = 0.9), size = 2.2) +
-    geom_hline(yintercept = floor(as.numeric(difftime(max(Summarized_Data$StartTime), min(Summarized_Data$StartTime), units = "days"))),
+    geom_hline(yintercept = floor(as.numeric(difftime(max(df$StartTime), min(df$StartTime), units = "days"))),
              linetype = "dashed", color = "red", linewidth = 0.5)
 
 plot1
 
 #Plot 2: CH4 production per day
-plot2 <- Summarized_Data %>%
+plot2 <- df %>%
   dplyr::mutate(day = as.Date(EndTime)) %>%
   dplyr::group_by(FarmName, day) %>%
   dplyr::summarise(daily_CH4 = weighted.mean(CH4GramsPerDay, GoodDataDuration, na.rm = TRUE)) %>%
@@ -133,9 +134,9 @@ plot2
 
 
 ##Changing the format of the hour of the day
-Summarized_Data$HourOfDay <- as.numeric(Summarized_Data$HourOfDay)
+df$HourOfDay <- as.numeric(df$HourOfDay)
 
-plot3 <- Summarized_Data %>%
+plot3 <- df %>%
   mutate(AMPM = case_when(
     HourOfDay >= 22 ~ "10PM - 4AM",
     HourOfDay < 4 ~ "10PM - 4AM",
@@ -158,8 +159,7 @@ plot3 <- Summarized_Data %>%
 
 plot3
 
-
-
 ```
+
 
 
