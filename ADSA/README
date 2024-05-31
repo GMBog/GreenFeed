@@ -1,0 +1,11 @@
+Task 1:
+Answer the following questions using the software you prefer:
+How many cows do you have?
+How many records do you have per cow?
+What is the average methane production per cow?
+
+Task 2:
+Run download_data.R to get the Daily Report. Then, answer the questions:
+How many cows do you have?
+How many records do you have per cow?
+What is the average methane production per cow?
