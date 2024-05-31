@@ -1,4 +1,4 @@
-# Processing daily methane data from GreenFeed system
+#Processing daily data from GreenFeed
 
 Here we provide Python, R, and Rmarkdown scripts to processing daily data from multiple GreenFeed systems at once.
 
