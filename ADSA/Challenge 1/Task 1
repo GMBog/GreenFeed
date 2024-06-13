@@ -1,6 +1,10 @@
-Task 1:
+Challenge 1:
 
-Answer the following questions using the software you prefer:
-1. How many cows do you have?
-2. How many records do you have per cow?
-3. What is the average methane production per cow?
+First, Download ADSA2024_GFdata_Day4.xlsx
+
+Then using the software of your preference, answer the following questions:
+1. How many cows (or unique RFID) do you have?
+2. How many records do you have per cow (or unique RFID)?
+3. What is the average methane production (or CH4GramsPerDay) per cow?
+
+Finally, to check your results open Report_ADSA2024.pdf and compare with your results
