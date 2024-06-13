@@ -23,12 +23,12 @@ library(stringr)
 #List of studies
 FID <- list(
   list(
-    Exp = "ADSA2024",
-    Unit = "579",
-    StartDate = "2023-12-04",
-    EndDate = "2024-01-11",
-    dir = "~/Principal/Conferences/ADSA2024/Workshop_GF/",
-    EIDdir = "~/Principal/Conferences/ADSA2024/Workshop_GF/ADSA2024_EID.csv")
+    Exp = "ADSA2024",       #Name of the study
+    Unit = "579",            #GreenFeed unit                                      
+    StartDate = "2023-12-04",  #Start Date of the study
+    EndDate = "2024-01-11",    #End Date of the study (if study is running replace by the followingh code Sys.Date())
+    dir = "~/Downloads/ADSA/Challenge 2/",  #Directory where the GreenFeed data will be saved
+    EIDdir = "~/Downloads/ADSA/Challenge 2/ADSA2024_EID.csv")   #Directory where is located the file with EID (TAG IDs)
 )
 
 #Loop to download data for each study
@@ -67,13 +67,14 @@ for (i in seq(FID)){
 #  write_excel_csv(df, file = name_file)
   
   #df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata_Day4.xlsx"))
+  ##Open the GreenFeed data that you download in your computer
   df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata.xlsx"))
-  
   
   #Generate report as PDF for each of the experiments specified in the list above:
   selected_experiment <- FID[[i]]$Exp
-  
+
   #Read cow's ID table included in the experiment
+  ##The file could be in csv or Excel format
   file_path <- FID[[i]]$EIDdir
   if (tolower(tools::file_ext(file_path)) == "csv") {
     CowsInExperiment <- read_table(file_path, col_types = cols(FarmName = col_character(), EID = col_character()))
@@ -92,7 +93,8 @@ for (i in seq(FID)){
   ##Summarized data has the gas production data for a long period of time, so you should select the specific period of your experiment
   ##Selecting data only from cows in the current experiment
   df <- df %>%
-    
+
+    ##Remove all the records before the Start Date of your study 
     dplyr::filter(EndTime < as.POSIXct(paste(FID[[i]]$EndDate, "00:00:00"), tz = "UTC")) %>%
     
     #Step 1: Retained only those cows in the experiment
@@ -117,7 +119,7 @@ for (i in seq(FID)){
   
   
   #Create PDF report using Rmarkdown
-  render("~/Principal/Conferences/ADSA2024/Workshop_GF/ReportsGF.Rmd", 
+  render("~/Downloads/Challenge 2/ReportsGF.Rmd", 
          output_file = paste0("~/Downloads/Report_", FID[[i]]$Exp))
   
 }
