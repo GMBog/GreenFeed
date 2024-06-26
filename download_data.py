@@ -1,22 +1,23 @@
 #!/usr/bin/python3
 
+## Script to download data from GreenFeed system using API 
+## Written by Guillermo Martinez Boggio 
+## July 2024
+
+#Open libraries
 from urllib import request
 from datetime import date
 import os
 
-# Define today's date
+#Define today's date
 today = date.today()
 
-# First Authenticate to receive token:
+#First Authenticate to receive token (Change here the username and password):
 USER = "your_username"
 PASS = "your_password"
 
-# Define here the FeederID, start and end date of experiment, and directory to save the files
+#Define here the FeederID, start and end date of experiment, and directory to save the files
 FID = [
-
-       #Ended experiments
-
-       #Running experiment
 
         {'Exp': 'EXP1',
          'Unit': '1',
