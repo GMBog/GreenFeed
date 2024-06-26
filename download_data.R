@@ -1,8 +1,7 @@
 
-
-#### API_Greenfeed to data download ###############################################
-
-rm(list = ls()) # initialization 
+## Script to download data from GreenFeed system using API 
+## Written by Guillermo Martinez Boggio 
+## July 2024
 
 #Open libraries
 library(readr)
@@ -11,40 +10,42 @@ library(dplyr)
 library(lubridate)
 library(knitr)
 library(rmarkdown)
-
 library(httr)
 library(stringr)
 
+rm(list = ls()) # initialization 
 
 #Change to login: USER & PASSWORD
-#USER <- "your_username" #Change to login password
-#PASS <- "your_password"
+USER <- "your_username"     #Change to your login
+PASS <- "your_password"     #Change to your password
 
 #List of studies
 FID <- list(
   list(
-    Exp = "ADSA2024",
-    Unit = "579",
-    StartDate = "2023-12-04",
-    EndDate = "2024-01-11",
-    dir = "~/ADSA2024/",
-    EIDdir = "~/ADSA2024/ADSA2024_EID.csv")
+    Exp = "ADSA2024",          #Set the name of your study
+    Unit = "579",              #Define the units (if multiples define as: "579,580")
+    StartDate = "2023-12-04",  #Define the start date for period request
+    EndDate = "2024-01-11",    #Define the end date for period request
+    dir = "~/ADSA2024/",       #Set the directory to save your data
+    EIDdir = "~/ADSA2024/ADSA2024_EID.csv")  #Specify the file with the animals ID in your study (useful to remove no animal ID and errors)
 )
 
-#Loop to download data for each study
+#Loop to download data for each study in your list of studies
 for (i in seq(FID)){
+
+  #STEP 1: DOWNLOAD DATA
   
-#  First Authenticate to receive token:
+  #First Authenticate to receive token:
   req <- POST("https://portal.c-lockinc.com/api/login", body=list(user=USER, pass=PASS))
   stop_for_status(req)
   TOK <- trimws(content(req))
   print(TOK)
   
-  # Now get data using the login token
-  URL = paste0("https://portal.c-lockinc.com/api/getemissions?d=visits&fids=", FID[[i]]$Unit, "&st=", FID[[i]]$StartDate, "&et=", FID[[i]]$EndDate, "%2012:00:00")
+  #Now get data using the login token
+  URL <- paste0("https://portal.c-lockinc.com/api/getemissions?d=visits&fids=", FID[[i]]$Unit, "&st=", FID[[i]]$StartDate, "&et=", FID[[i]]$EndDate, "%2012:00:00")
   print(URL)
   
-  #replace with your Request URL
+  #Replace with your Request URL
   req <- POST(URL, body=list(token=TOK))
   stop_for_status(req)
   a <- content(req)
@@ -56,19 +57,18 @@ for (i in seq(FID)){
   
   #Split the commas into a dataframe, while getting rid of the "Parameters" line and the headers line
   df <- do.call("rbind", str_split(perline[3:length(perline)], ","))
-  df = as.data.frame(df)
-  colnames(df) = c('FeederID', 'AnimalName', 'RFID', 'StartTime', 'EndTime', 'GoodDataDuration', 
+  df <- as.data.frame(df)
+  colnames(df) <- c('FeederID', 'AnimalName', 'RFID', 'StartTime', 'EndTime', 'GoodDataDuration', 
                    'CO2GramsPerDay', 'CH4GramsPerDay', 'O2GramsPerDay', 'H2GramsPerDay', 'H2SGramsPerDay', 
                    'AirflowLitersPerSec', 'AirflowCf', 'WindSpeedMetersPerSec', 'WindDirDeg', 'WindCf', 
                    'WasInterrupted', 'InterruptingTags', 'TempPipeDegreesCelsius', 'IsPreliminary','RunTime')
   
   #Data should be save as .csv to avoid formatting issues
-  name_file = paste0(FID[[i]]$dir, FID[[i]]$Exp, "_GFdata.csv")
+  name_file <- paste0(FID[[i]]$dir, FID[[i]]$Exp, "_GFdata.csv")
   write_excel_csv(df, file = name_file)
- 
-  df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata_Day4.xlsx"))
-  #df <- read_excel(paste0(FID[[i]]$dir, "ADSA2024_GFdata.xlsx"))
+
   
+  #STEP 2: GENERATE DAILY REPORT FROM DATA
   
   #Generate report as PDF for each of the experiments specified in the list above:
   selected_experiment <- FID[[i]]$Exp
@@ -116,13 +116,8 @@ for (i in seq(FID)){
     dplyr::arrange(desc(Actual_DIM))
   
   
-  #Create PDF report using Rmarkdown
-  render("~/ADSA2024/ReportsGF.Rmd", 
-         output_file = paste0("~/Downloads/Report_", FID[[i]]$Exp))
+  #Create PDF report using Rmarkdown (Define here the name and folde to save your daily report)
+  render("~/ADSA2024/ReportsGF.Rmd", output_file = paste0("~/Downloads/Report_", FID[[i]]$Exp))
   
 }
-
-
-#################################################################################
-
 
