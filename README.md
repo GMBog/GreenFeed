@@ -14,7 +14,7 @@ The workflow consist in 2 steps:
 1. Download data from C-Lock server through the API.
 2. Processing GreenFeed data from each unit and period of time requested, and generate easy-to-read reports (in PDF or HTML)
 
-In this GreenFeed repository, we provide scripts necessary to download and process the GreenFeed data (download_data.R) from multiple units and multiple studies simultaneously. But also, the script in Rmarkdown to generate a daily report from each GreenFeed study (ReportsGF.Rmd).
+In this GreenFeed repository, we provide scripts necessary to download and process the GreenFeed data (download_GFdata.R) from multiple units and multiple studies simultaneously. But also, the script in Rmarkdown to generate a daily report from each GreenFeed study (ReportsGF.Rmd).
 
 
 ## Feed Intake data
