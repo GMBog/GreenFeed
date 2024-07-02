@@ -23,3 +23,5 @@ We provide an R script to process the VRfiles from Insentec system.
 Once you have the VRfile.dat from the system, you can use macro_intakes.R to process the file and get as a output: 
  - Daily Excel file with the processed intakes
  - Compiled Excel file with the intake data
+
+Also, there is a script (AP_intakes.R) to process the intakes from GreenFeed. The output is a file with the daily intakes in grams per animal ID.
